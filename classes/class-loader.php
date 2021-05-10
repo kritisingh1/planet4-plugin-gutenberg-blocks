@@ -81,6 +81,7 @@ final class Loader {
 		new Blocks\TakeActionBoxout();
 		new Blocks\Timeline();
 		new Blocks\SocialMediaCards();
+		new Blocks\OldENForm();
 		new Blocks\ENForm();
 		new Blocks\GuestBook();
 	}
