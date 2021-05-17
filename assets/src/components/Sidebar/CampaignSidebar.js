@@ -6,6 +6,7 @@ import isShallowEqual from '@wordpress/is-shallow-equal';
 import { savePreviewMeta } from '../../saveMetaToPreview';
 import { PostParentLink } from './PostParentLink';
 import { LegacyThemeSettings } from './LegacyThemeSettings';
+import { NewThemeSettings } from './NewThemeSettings';
 
 const loadTheme = async (value) => {
   if ( value === '' || !value ) {
@@ -18,6 +19,7 @@ const loadTheme = async (value) => {
   const json = await fetch(themeJsonUrl);
   return await json.json();
 }
+
 export class CampaignSidebar extends Component {
   static getId() {
     return 'planet4-campaign-sidebar';
@@ -30,6 +32,7 @@ export class CampaignSidebar extends Component {
   constructor( props ) {
     super( props );
     this.state = {
+      legacyTheme: null,
       theme: null,
       meta: null,
       parent: null,
@@ -40,15 +43,15 @@ export class CampaignSidebar extends Component {
   // When theme switches, we need to check if any options were previously chosen that are not allowed in the new theme.
   // For each of these, we either set them to the default value
   async handleThemeSwitch( metaKey, value, meta ) {
-    const theme = await loadTheme( value )
-    const prevTheme = this.state.theme;
-    this.setState({ theme });
+    const newTheme = await loadTheme( value )
+    const prevTheme = this.state.legacyTheme;
+    this.setState({ legacyTheme: newTheme });
 
     // Loop through the new theme's fields, and check whether any of the already chosen options has a value that is not
     // available anymore.
     const invalidatedFields = prevTheme.fields.filter( field => {
 
-      const resolvedField = resolveField(theme, field.id, meta);
+      const resolvedField = resolveField(newTheme, field.id, meta);
 
       const currentValue = meta[ field.id ];
 
@@ -58,7 +61,7 @@ export class CampaignSidebar extends Component {
 
       return !(resolvedField.options.some( option => option.value === currentValue) );
 
-    } ).map( field => resolveField( theme, field.id, meta ) )
+    } ).map( field => resolveField( newTheme, field.id, meta ) )
 
     // Set each of the invalidated fields to their default value, or unset them.
     return invalidatedFields.reduce( ( result, field ) => {
@@ -93,10 +96,10 @@ export class CampaignSidebar extends Component {
       this.setState({ meta });
       savePreviewMeta();
       if (
-        this.state.theme === null
+        this.state.legacyTheme === null
       ) {
         const theme = await loadTheme(themeName);
-        this.setState({ theme });
+        this.setState({ legacyTheme: theme });
       }
     } );
     wp.data.subscribe( () => {
@@ -112,7 +115,7 @@ export class CampaignSidebar extends Component {
   }
 
   render() {
-    const { parent, theme } = this.state;
+    const { parent, legacyTheme, theme } = this.state;
 
     return (
       <>
@@ -123,14 +126,17 @@ export class CampaignSidebar extends Component {
         </PluginSidebarMoreMenuItem>
         <PluginSidebar
           name={ CampaignSidebar.getId() }
-          title={ __( 'Campaign Options', 'planet4-blocks-backend' ) }
+          title={ __('Campaign Options', 'planet4-blocks-backend') }
         >
-          { parent ? <PostParentLink parent={ parent }/> :
-            <LegacyThemeSettings
-              theme={theme}
-              handleThemeSwitch={ this.handleThemeSwitch }
-            />
-          }
+          { !!parent && <PostParentLink parent={ parent }/> }
+          { !parent && <NewThemeSettings currentTheme={this.state.theme} onChange={ value => {
+            console.log('new theme', value, typeof value)
+            return this.setState({ theme: value });
+          } }/> }
+          { !parent && !theme && <LegacyThemeSettings
+            theme={ legacyTheme }
+            handleThemeSwitch={ this.handleThemeSwitch }
+          /> }
         </PluginSidebar>
       </>
     );
