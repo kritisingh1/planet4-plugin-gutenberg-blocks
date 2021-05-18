@@ -2,6 +2,7 @@ import { SelectControl } from '@wordpress/components';
 import { useState, useEffect } from 'react';
 import { p4ServerThemes } from '../../theme/p4ServerThemes';
 import { __ } from '@wordpress/i18n';
+import { useDispatch } from '@wordpress/data';
 
 const keysAsLabel = obj => Object.keys(obj).map(k => ({ label: k, value: k }));
 
@@ -29,6 +30,9 @@ const useAppliedCssVariables = (serverThemes, currentTheme) => {
   const applyChangesToDom = () => {
     console.log('Applying ');
     const theme = serverThemes[currentTheme] || {};
+    if (!theme) {
+      return;
+    }
     Object.entries(theme).forEach(([name, value]) => {
       document.documentElement.style.setProperty(name, value);
     });
@@ -47,9 +51,14 @@ const useAppliedCssVariables = (serverThemes, currentTheme) => {
 
 export const NewThemeSettings = ({ onChange, currentTheme }) => {
   const [selectedTheme, setSelectedTheme] = useState(currentTheme);
+  const {editPost} = useDispatch('core/editor');
   const emitOnChange = () => {
-
-    return onChange(selectedTheme);
+    if (selectedTheme !== null) {
+      const meta = { theme: selectedTheme };
+      console.log(meta);
+      onChange(selectedTheme);
+      editPost({meta});
+    }
   };
   useEffect(emitOnChange, [selectedTheme]);
   const serverThemes = useServerThemes();
@@ -58,8 +67,8 @@ export const NewThemeSettings = ({ onChange, currentTheme }) => {
   return <div className="components-panel__body is-opened">
     <SelectControl
       label={ __('Theme', 'planet4-blocks-backend') }
-      title={ __('Only for reviewing themes, not intended to be 2 checkboxes in the final product.', 'planet4-blocks-backend') }
-      options={ [{ label: 'None', value: '' }, ...keysAsLabel(serverThemes)] }
+      title={ __('Only for reviewing themes, not intended to be 2 drop downs in the final version.', 'planet4-blocks-backend') }
+      options={ [{ label: 'Legacy', value: '' }, ...keysAsLabel(serverThemes)] }
       onChange={ setSelectedTheme }
       value={ selectedTheme || '' }
     />

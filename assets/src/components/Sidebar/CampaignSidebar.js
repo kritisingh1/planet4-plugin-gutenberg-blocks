@@ -8,6 +8,17 @@ import { PostParentLink } from './PostParentLink';
 import { LegacyThemeSettings } from './LegacyThemeSettings';
 import { NewThemeSettings } from './NewThemeSettings';
 
+const isLegacy= theme => [
+  'default',
+  'antarctic',
+  'arctic',
+  'climate',
+  'oceans',
+  'oil',
+  'plastics',
+  'forest',
+].includes(theme) || !theme;
+
 const loadTheme = async (value) => {
   if ( value === '' || !value ) {
     value = 'default';
@@ -32,7 +43,6 @@ export class CampaignSidebar extends Component {
   constructor( props ) {
     super( props );
     this.state = {
-      legacyTheme: null,
       theme: null,
       meta: null,
       parent: null,
@@ -44,8 +54,8 @@ export class CampaignSidebar extends Component {
   // For each of these, we either set them to the default value
   async handleThemeSwitch( metaKey, value, meta ) {
     const newTheme = await loadTheme( value )
-    const prevTheme = this.state.legacyTheme;
-    this.setState({ legacyTheme: newTheme });
+    const prevTheme = this.state.theme;
+    this.setState({ theme: newTheme });
 
     // Loop through the new theme's fields, and check whether any of the already chosen options has a value that is not
     // available anymore.
@@ -96,10 +106,10 @@ export class CampaignSidebar extends Component {
       this.setState({ meta });
       savePreviewMeta();
       if (
-        this.state.legacyTheme === null
+        this.state.theme === null
       ) {
         const theme = await loadTheme(themeName);
-        this.setState({ legacyTheme: theme });
+        this.setState({ theme: theme });
       }
     } );
     wp.data.subscribe( () => {
@@ -115,7 +125,9 @@ export class CampaignSidebar extends Component {
   }
 
   render() {
-    const { parent, legacyTheme, theme } = this.state;
+    const { parent, theme, meta } = this.state;
+
+    const isLegacyTheme = !theme || isLegacy(theme.id);
 
     return (
       <>
@@ -129,12 +141,16 @@ export class CampaignSidebar extends Component {
           title={ __('Campaign Options', 'planet4-blocks-backend') }
         >
           { !!parent && <PostParentLink parent={ parent }/> }
-          { !parent && <NewThemeSettings currentTheme={this.state.theme} onChange={ value => {
+          { !parent && meta && <NewThemeSettings currentTheme={meta.theme} onChange={ async value => {
             console.log('new theme', value, typeof value)
-            return this.setState({ theme: value });
+            if (isLegacy(value)) {
+              const theme = await loadTheme();
+              this.setState({ theme });
+            }
           } }/> }
-          { !parent && !theme && <LegacyThemeSettings
-            theme={ legacyTheme }
+          { !parent && theme && isLegacyTheme && <LegacyThemeSettings
+            disableStyles={!!theme}
+            theme={ theme }
             handleThemeSwitch={ this.handleThemeSwitch }
           /> }
         </PluginSidebar>
