@@ -15,7 +15,7 @@ const isLegacy= theme => [
   'climate',
   'oceans',
   'oil',
-  'plastics',
+  'plastic',
   'forest',
 ].includes(theme) || !theme;
 
