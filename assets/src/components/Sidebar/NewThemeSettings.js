@@ -68,8 +68,12 @@ export const NewThemeSettings = ({ onChange, currentTheme }) => {
   useAppliedCssVariables(serverThemes, currentTheme);
 
   return <div className="components-panel__body is-opened">
+    <span>
+      NOTE: This checkbox is to make it easier to compare the old and new version and check if they're the same.
+      It will not be used on production.
+    </span>
     <SelectControl
-      label={ __('Theme', 'planet4-blocks-backend') }
+      label={ __('New Theme', 'planet4-blocks-backend') }
       title={ __('Only for reviewing themes, not intended to be 2 drop downs in the final version.', 'planet4-blocks-backend') }
       options={ [{ label: 'Legacy', value: '' }, ...keysAsLabel(serverThemes)] }
       onChange={ setSelectedTheme }

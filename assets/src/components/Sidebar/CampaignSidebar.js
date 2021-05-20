@@ -25,7 +25,6 @@ const loadTheme = async (value) => {
   }
   const baseUrl = window.location.href.split( '/wp-admin' )[ 0 ];
   const themeJsonUrl = `${ baseUrl }/wp-content/themes/planet4-master-theme/campaign_themes/${ value }.json`;
-  console.log( `fetching theme ${ value }` );
 
   const json = await fetch(themeJsonUrl);
   return await json.json();
@@ -142,7 +141,6 @@ export class CampaignSidebar extends Component {
         >
           { !!parent && <PostParentLink parent={ parent }/> }
           { !parent && meta && <NewThemeSettings currentTheme={meta.theme} onChange={ async value => {
-            console.log('new theme', value, typeof value)
             if (isLegacy(value)) {
               const theme = await loadTheme();
               this.setState({ theme });
