@@ -12,9 +12,12 @@ const keysAsLabel = obj => Object.keys(obj).map(k => ({ label: k, value: k }));
 const useServerThemes = () => {
   const [serverThemes, setServerThemes] = useState({});
 
-  useEffect(async () => {
-    const themes = await p4ServerThemes.fetchThemes();
-    setServerThemes(themes);
+  useEffect(() => {
+    const fetchThemes = async () => {
+      const themes = await p4ServerThemes.fetchThemes();
+      setServerThemes(themes);
+    };
+    fetchThemes();
   }, []);
 
   return serverThemes;
