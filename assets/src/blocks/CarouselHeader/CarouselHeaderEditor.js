@@ -1,4 +1,5 @@
-import { useRef } from '@wordpress/element';
+import { useRef } from '@hooks';
+import { Fragment } from '@render';
 
 // Carousel Header
 import { SlidesContainer } from './SlidesContainer';
@@ -51,7 +52,7 @@ export const CarouselHeaderEditor = ({ setAttributes, attributes }) => {
   }
 
   return (
-    <>
+    <Fragment>
       <Sidebar
         carouselAutoplay={carousel_autoplay}
         slides={slidesWithImages}
@@ -92,6 +93,6 @@ export const CarouselHeaderEditor = ({ setAttributes, attributes }) => {
           </Slide>
         ))}
       </SlidesContainer>
-    </>
+    </Fragment>
   );
 }

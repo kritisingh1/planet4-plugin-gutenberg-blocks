@@ -3,8 +3,9 @@ import {
   PanelBody,
   RangeControl
 } from '@wordpress/components';
+import { Fragment } from '@render';
 import { useSelect } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { useEffect } from '@hooks';
 import { InspectorControls } from '@wordpress/block-editor';
 
 import { URLInput } from '../../components/URLInput/URLInput';
@@ -40,7 +41,7 @@ const renderEdit = (attributes, toAttribute, setAttributes, isSelected) => {
   }
 
   return (
-    <>
+    <Fragment>
       <InspectorControls>
         <PanelBody title={__('Setting', 'planet4-blocks-backend')}>
           <RangeControl
@@ -77,7 +78,7 @@ const renderEdit = (attributes, toAttribute, setAttributes, isSelected) => {
           })}
         </PanelBody>
       </InspectorControls>
-    </>
+    </Fragment>
   );
 };
 

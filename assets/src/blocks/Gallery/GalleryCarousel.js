@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@hooks';
 import { IMAGE_SIZES } from './imageSizes';
 
 const { __ } = wp.i18n;

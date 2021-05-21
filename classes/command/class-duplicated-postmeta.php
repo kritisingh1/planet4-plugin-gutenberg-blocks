@@ -62,7 +62,7 @@ class Duplicated_Postmeta {
 		$sql = "SELECT `meta_key`, COUNT(post_id) AS all_count , COUNT(DISTINCT post_id) AS unique_count
 				FROM `wp_postmeta`
 				GROUP by `meta_key`
-				HAVING all_count <> unique_count
+				HAVING all_count <Fragment> unique_count
 				ORDER BY `all_count` DESC";
 
 		return $wpdb->get_results( $sql );

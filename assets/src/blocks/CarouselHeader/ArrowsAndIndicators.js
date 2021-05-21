@@ -1,3 +1,4 @@
+import { Fragment } from '@render';
 import { Arrows } from './Arrows';
 import { Indicators } from './Indicators';
 
@@ -9,7 +10,7 @@ export const ArrowsAndIndicators = ({
   slides = null,
 }) => {
   return slides.length > 1 && (
-    <>
+    <Fragment>
       <Arrows
         goToPrevSlide={goToPrevSlide}
         goToNextSlide={goToNextSlide}
@@ -19,6 +20,6 @@ export const ArrowsAndIndicators = ({
         currentSlide={currentSlide}
         goToSlide={goToSlide}
       />
-    </>
+    </Fragment>
   );
 };

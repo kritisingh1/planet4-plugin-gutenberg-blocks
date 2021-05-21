@@ -1,10 +1,7 @@
 import { ArrowsAndIndicators } from './ArrowsAndIndicators';
 
-import {
-  Children,
-  cloneElement,
-  forwardRef,
-} from '@wordpress/element';
+import { cloneElement } from '@render';
+import { forwardRef } from '@compat';
 
 const StaticSlidesContainer = ({
   children,
@@ -14,9 +11,11 @@ const StaticSlidesContainer = ({
   goToNextSlide = null,
   slides = [],
 }, ref) => {
-  const renderChildSlides = passedProps => Children.map(children, child => {
+  const renderChildSlides = passedProps => {
+    return children.map(child => {
       return child && cloneElement(child, passedProps)
-    });
+    })
+  };
 
   return (
     <section
