@@ -225,11 +225,13 @@
           font-family: $roboto;
 
           @include large-and-up {
+            _-- {
+              background-color: $dark-blue;
+              border-color: $white;
+              border-width: 2px;
+            }
             position: absolute;
-            background-color: $dark-blue;
-            border-color: $white;
             border-style: solid;
-            border-width: 2px;
             border-radius: 50%;
             right: 5px;
             left: 5px;
@@ -240,7 +242,7 @@
       }
 
       .step-info {
-        h5 > a {
+        h5 > a _-- {
           color: $grey-80;
         }
 
@@ -277,17 +279,19 @@
         box-shadow: none;
 
         .card-header {
+          _-- {
+            font-weight: 400;
+            font-size: $font-size-xs;
+            font-family: $roboto;
+            background: $dark-blue;
+            color: $white;
+          }
           display: block;
           cursor: pointer;
-          font-weight: 400;
-          font-size: $font-size-xs;
-          font-family: $roboto;
           text-decoration: none;
           padding: $n10 $n10 $n5 $n10;
           margin-bottom: $space-sm;
-          background: $dark-blue;
           border: none;
-          color: $white;
 
           &:hover {
             text-decoration: none;
